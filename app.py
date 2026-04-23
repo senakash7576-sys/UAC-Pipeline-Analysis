@@ -5,6 +5,7 @@ import numpy as np
 st.title("📊 UAC Pipeline Dashboard")
 
 df = pd.read_csv("data.csv")
+st.write(df.columns)
 
 # Clean column names
 df.columns = df.columns.str.strip()
