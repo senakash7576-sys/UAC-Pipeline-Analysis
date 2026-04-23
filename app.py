@@ -4,20 +4,13 @@ import numpy as np
 
 st.title("📊 UAC Pipeline Dashboard")
 
+# Load data
 df = pd.read_csv("data.csv")
-st.write(df.columns)
 
 # Clean column names
 df.columns = df.columns.str.strip()
 
-# DEBUG (देखो actual names)
-st.write("Columns:", df.columns)
-
-# 🔥 AUTO DETECT COLUMNS
-cbp_col = [c for c in df.columns if "CBP custody" in c and "in" in c][0]
-transfer_col = [c for c in df.columns if "transferred" in c][0]
-
-# Clean numeric
+# Clean numeric data
 for col in df.columns:
     if col != 'Date':
         df[col] = df[col].astype(str).str.replace(',', '')
@@ -25,15 +18,20 @@ for col in df.columns:
 
 df = df.fillna(0)
 
-# KPI
+# KPI calculations
 df['Transfer_Efficiency'] = np.where(
-    df[cbp_col] == 0,
+    df['Children in CBP custody'] == 0,
     0,
-    df[transfer_col] / df[cbp_col]
+    df['Children transferred out of CBP custody'] / df['Children in CBP custody']
 )
 
-df['Backlog'] = df[cbp_col] - df[transfer_col]
+df['Backlog'] = df['Children in CBP custody'] - df['Children transferred out of CBP custody']
 
 # Charts
+st.subheader("Transfer Efficiency Trend")
 st.line_chart(df['Transfer_Efficiency'])
+
+st.subheader("Backlog Trend")
 st.line_chart(df['Backlog'])
+
+st.success("✅ Dashboard running successfully")
