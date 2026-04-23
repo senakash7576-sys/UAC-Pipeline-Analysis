@@ -4,13 +4,16 @@ import numpy as np
 
 st.title("📊 UAC Pipeline Dashboard")
 
-df = pd.read_csv("clean_data.csv", sep=",", engine="python", quotechar='"')
+# 🔥 AUTO FIX CSV (VERY IMPORTANT)
+df = pd.read_csv("clean_data.csv", sep=None, engine="python")
 
+# DEBUG (देखो सही load हुआ या नहीं)
 st.write("Shape:", df.shape)
+st.write("Columns:", df.columns)
 
 df.columns = df.columns.str.strip()
 
-# SAFE COLUMN FIND
+# 🔥 SAFE COLUMN FIND
 cbp_col = None
 transfer_col = None
 
@@ -20,7 +23,7 @@ for col in df.columns:
     if "transferred" in col:
         transfer_col = col
 
-st.write("Using:", cbp_col, transfer_col)
+st.write("Using columns:", cbp_col, transfer_col)
 
 # Clean numeric
 for col in df.columns:
@@ -38,7 +41,11 @@ df['Transfer_Efficiency'] = np.where(
 
 df['Backlog'] = df[cbp_col] - df[transfer_col]
 
+# Charts
+st.subheader("Transfer Efficiency")
 st.line_chart(df['Transfer_Efficiency'])
+
+st.subheader("Backlog")
 st.line_chart(df['Backlog'])
 
 st.success("✅ Dashboard running successfully")
