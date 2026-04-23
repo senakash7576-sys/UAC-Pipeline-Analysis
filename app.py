@@ -10,6 +10,13 @@ df = pd.read_csv("data.csv")
 # Clean column names
 df.columns = df.columns.str.strip()
 
+# DEBUG (optional)
+st.write("Columns:", df.columns)
+
+# 🔥 SAFE COLUMN ACCESS (index based)
+cbp_col = df.columns[2]          # Children in CBP custody
+transfer_col = df.columns[3]     # Children transferred out
+
 # Clean numeric data
 for col in df.columns:
     if col != 'Date':
@@ -18,20 +25,20 @@ for col in df.columns:
 
 df = df.fillna(0)
 
-# KPI calculations
+# KPI
 df['Transfer_Efficiency'] = np.where(
-    df['Children in CBP custody'] == 0,
+    df[cbp_col] == 0,
     0,
-    df['Children transferred out of CBP custody'] / df['Children in CBP custody']
+    df[transfer_col] / df[cbp_col]
 )
 
-df['Backlog'] = df['Children in CBP custody'] - df['Children transferred out of CBP custody']
+df['Backlog'] = df[cbp_col] - df[transfer_col]
 
 # Charts
-st.subheader("Transfer Efficiency Trend")
+st.subheader("Transfer Efficiency")
 st.line_chart(df['Transfer_Efficiency'])
 
-st.subheader("Backlog Trend")
+st.subheader("Backlog")
 st.line_chart(df['Backlog'])
 
 st.success("✅ Dashboard running successfully")
