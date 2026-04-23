@@ -4,18 +4,25 @@ import numpy as np
 
 st.title("📊 UAC Pipeline Dashboard")
 
-df = pd.read_csv("data.csv", engine="python")
+df = pd.read_csv("data.csv", sep=",", engine="python", quotechar='"')
 
-st.write("Columns:", df.columns)
 st.write("Shape:", df.shape)
 
 df.columns = df.columns.str.strip()
 
-# 🔥 SAFE: name match instead of index
-cbp_col = [c for c in df.columns if "CBP custody" in c and "in" in c][0]
-transfer_col = [c for c in df.columns if "transferred" in c][0]
+# SAFE COLUMN FIND
+cbp_col = None
+transfer_col = None
 
-# clean
+for col in df.columns:
+    if "CBP custody" in col and "in" in col:
+        cbp_col = col
+    if "transferred" in col:
+        transfer_col = col
+
+st.write("Using:", cbp_col, transfer_col)
+
+# Clean numeric
 for col in df.columns:
     if col != 'Date':
         df[col] = df[col].astype(str).str.replace(',', '')
@@ -23,6 +30,7 @@ for col in df.columns:
 
 df = df.fillna(0)
 
+# KPI
 df['Transfer_Efficiency'] = np.where(
     df[cbp_col] == 0, 0,
     df[transfer_col] / df[cbp_col]
