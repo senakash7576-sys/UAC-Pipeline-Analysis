@@ -4,7 +4,7 @@ import numpy as np
 
 st.title("📊 UAC Pipeline Dashboard")
 
-df = pd.read_csv("clean_data.csv.xls", sep=",", engine="python", quotechar='"')
+df = pd.read_csv("clean_data.csv", sep=",", engine="python", quotechar='"')
 
 st.write("Shape:", df.shape)
 
