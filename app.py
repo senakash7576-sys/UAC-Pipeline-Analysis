@@ -5,7 +5,7 @@ import numpy as np
 st.title("📊 UAC Pipeline Dashboard")
 
 # 🔥 AUTO FIX CSV (VERY IMPORTANT)
-df = pd.read_csv("clean_data.csv.xls", sep=None, engine="python")
+df = pd.read_csv("FINAL_data.csv", sep=None, engine="python")
 
 # DEBUG (देखो सही load हुआ या नहीं)
 st.write("Shape:", df.shape)
